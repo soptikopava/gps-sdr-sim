@@ -31,7 +31,7 @@ static void usage() {
         "  -b <bw>            Set RF bandwidth [MHz] (default 5.0)\n"
         "  -u <uri>           ADALM-Pluto URI\n"
         "  -n <network>       ADALM-Pluto network IP or hostname (default pluto.local)\n"
-        "  -o <offset>    Offset frequency [KHz] (default 0)\n");
+        "  -o <offset>        Offset frequency [KHz] (default 0)\n");
     return;
 }
 
@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
     struct iio_channel *tx0_q = NULL;
     struct iio_buffer *tx_buffer = NULL;    
     
-    while ((opt = getopt(argc, argv, "t:a:b:n:u:f:")) != EOF) {
+    while ((opt = getopt(argc, argv, "t:a:b:n:u:o:")) != EOF) {
         switch (opt) {
             case 't':
                 path = optarg;
@@ -249,3 +249,4 @@ error_exit:
     if (ctx) { iio_context_destroy(ctx); }
     return EXIT_SUCCESS;
 }
+

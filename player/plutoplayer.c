@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
                 break;
             case 'o':
                 txcfg.offsett = atof(optarg);
-				txcfg.lo_hz = txcfg.lo_hz + KHZ(txcfg.offsett);
+		txcfg.lo_hz = txcfg.lo_hz + KHZ(txcfg.offsett);
                 break;
             default:
                 printf("Unknown argument '-%c %s'\n", opt, optarg);

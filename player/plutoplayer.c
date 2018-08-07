@@ -8,6 +8,7 @@
 #include <ad9361.h>
 
 #define NOTUSED(V) ((void) V)
+#define KHZ(x) ((long long)(x*1000.0 + .5))
 #define MHZ(x) ((long long)(x*1000000.0 + .5))
 #define GHZ(x) ((long long)(x*1000000000.0 + .5))
 #define NUM_SAMPLES 2600000
@@ -20,6 +21,7 @@ struct stream_cfg {
     long long lo_hz; // Local oscillator frequency in Hz
     const char* rfport; // Port name
     double gain_db; // Hardware gain
+    long long offsett; // Offset kHz
 };
 
 static void usage() {
@@ -28,7 +30,8 @@ static void usage() {
         "  -a <attenuation>   Set TX attenuation [dB] (default -20.0)\n"
         "  -b <bw>            Set RF bandwidth [MHz] (default 5.0)\n"
         "  -u <uri>           ADALM-Pluto URI\n"
-        "  -n <network>       ADALM-Pluto network IP or hostname (default pluto.local)\n");
+        "  -n <network>       ADALM-Pluto network IP or hostname (default pluto.local)\n"
+        "  -o <offset>    Offset frequency [KHz] (default 0)\n");
     return;
 }
 
@@ -77,7 +80,7 @@ int main(int argc, char** argv) {
     struct iio_channel *tx0_q = NULL;
     struct iio_buffer *tx_buffer = NULL;    
     
-    while ((opt = getopt(argc, argv, "t:a:b:n:u:")) != EOF) {
+    while ((opt = getopt(argc, argv, "t:a:b:n:u:f:")) != EOF) {
         switch (opt) {
             case 't':
                 path = optarg;
@@ -97,6 +100,10 @@ int main(int argc, char** argv) {
                 break;
             case 'n':
                 ip = optarg;
+                break;
+            case 'o':
+                txcfg.offsett = atof(optarg);
+				txcfg.lo_hz = txcfg.lo_hz + KHZ(txcfg.offsett);
                 break;
             default:
                 printf("Unknown argument '-%c %s'\n", opt, optarg);
@@ -242,4 +249,3 @@ error_exit:
     if (ctx) { iio_context_destroy(ctx); }
     return EXIT_SUCCESS;
 }
-
